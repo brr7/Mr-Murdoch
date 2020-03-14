@@ -8,10 +8,8 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  if (msg.content === 'tutoring?') {
-    msg.reply('ALGEBRA HONORS ONLY
-  
- ');
+  if (msg.content === 'ping') {
+    msg.reply('pong');
   }
 });
 
