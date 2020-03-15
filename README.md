@@ -1,16 +1,59 @@
 # Mr-Murdoch
 bru
+require('dotenv').config();
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const bot = new Discord.Client();
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
+const TOKEN = process.env.TOKEN;
 
-client.on('message', msg => {
+bot.login(TOKEN);
+bot.on('ready', () => {
+  console.info(`Logged in as ${bot.user.tag}!`);
+});bot.on('message', msg => {
   if (msg.content === 'ping') {
     msg.reply('pong');
+    msg.channel.send('pong');
+  }
+});if (msg.content === 'ping') {
+  msg.reply('pong');
+  msg.channel.send('pong');
+
+} else if (msg.content.startsWith('!kick')) {
+  if (msg.mentions.users.size) {
+    const taggedUser = msg.mentions.users.first();
+    msg.channel.send(`You wanted to kick: ${taggedUser.username}`);
+  } else {
+    msg.reply('Please tag a valid user!');
+  }
+}
+module.exports = {
+  Ping: require('./ping'),
+};module.exports = {
+  name: 'ping',
+  description: 'Ping!',
+  execute(msg, args) {
+    msg.reply('pong');
+    msg.channel.send('pong');
+  },
+};const Discord = require('discord.js');
+const bot = new Discord.Client();
+bot.commands = new Discord.Collection();
+const botCommands = require('./commands');
+
+Object.keys(botCommands).map(key => {
+  bot.commands.set(botCommands[key].name, botCommands[key]);
+});
+bot.on('message', msg => {
+  const args = msg.content.split(/ +/);
+  const command = args.shift().toLowerCase();
+  console.info(`Called command: ${command}`);
+
+  if (!bot.commands.has(command)) return;
+
+  try {
+    bot.commands.get(command).execute(msg, args);
+  } catch (error) {
+    console.error(error);
+    msg.reply('there was an error trying to execute that command!');
   }
 });
-
-client.login('token');
